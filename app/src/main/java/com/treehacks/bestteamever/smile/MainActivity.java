@@ -7,6 +7,8 @@ import android.provider.Telephony;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import org.joda.time.DateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,38 +16,52 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
 
-    List<String> lstSms = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getAllSmsFromProvider();
-        Log.d(TAG, lstSms.get(0));
+        List<String> sentTexts = getSentTextsFromCurrentDay();
+
+        if (sentTexts == null) {
+            Log.e(TAG, "No texts sent in last day!");
+        } else {
+//            for (String s : sentTexts) {
+//                Log.d(TAG, s);
+//            }
+            Log.d(TAG, sentTexts.toString());
+        }
     }
 
-    public List<String> getAllSmsFromProvider() {
-        ContentResolver cr = getContentResolver();
+    public List<String> getSentTextsFromCurrentDay() {
+        List<String> sentTexts = new ArrayList<>();
+        ContentResolver contentResolver = getContentResolver();
 
-        Cursor c = cr.query(Telephony.Sms.Sent.CONTENT_URI, // Official CONTENT_URI from docs
-                new String[] { Telephony.Sms.Sent.BODY }, // Select body text
-                null,
-                null,
-                Telephony.Sms.Sent.DEFAULT_SORT_ORDER); // Default sort order
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.withTimeAtStartOfDay();
+        long startOfDayTime = dateTime.getMillis();
 
-        int totalSMS = c.getCount();
+        String selection = Telephony.Sms.Sent.DATE + " > ?";
+        String[] selectionArgs = { String.valueOf(startOfDayTime) };
 
-        if (c.moveToFirst()) {
-            for (int i = 0; i < totalSMS; i++) {
-                lstSms.add(c.getString(0));
-                c.moveToNext();
-            }
-        } else {
-            throw new RuntimeException("You have no SMS in Inbox");
+        Cursor cursor = contentResolver.query(Telephony.Sms.Sent.CONTENT_URI,
+                new String[]{Telephony.Sms.Sent.BODY},
+                selection,
+                selectionArgs,
+                Telephony.Sms.Sent.DEFAULT_SORT_ORDER);
+
+        if (cursor == null) {
+            return null;
         }
-        c.close();
 
-        return lstSms;
+        if (cursor.moveToFirst()) {
+            for (int i = 0; i < cursor.getCount(); i++) {
+                sentTexts.add(cursor.getString(cursor.getColumnIndex(Telephony.Sms.Sent.BODY)));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+
+        return sentTexts;
     }
 }
