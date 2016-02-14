@@ -20,17 +20,16 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private static HashMap<String, Double> sentimentMap = new HashMap<String, Double>();
 
     public static final String TAG = MainActivity.class.getSimpleName();
+
+    private String mText = "";
+    private HashMap<String, Integer> sentimentMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        ToneTask toneTask = new ToneTask();
-        toneTask.execute();
 
         List<String> sentTexts = getSentTextsFromCurrentDay();
 
@@ -40,8 +39,12 @@ public class MainActivity extends AppCompatActivity {
 //            for (String s : sentTexts) {
 //                Log.d(TAG, s);
 //            }
-            Log.d(TAG, sentTexts.toString());
+
+            mText = sentTexts.toString();
+            ToneTask toneTask = new ToneTask();
+            toneTask.execute();
         }
+
     }
 
     public List<String> getSentTextsFromCurrentDay() {
@@ -84,13 +87,7 @@ public class MainActivity extends AppCompatActivity {
             ToneAnalyzer service = new ToneAnalyzer(ToneAnalyzer.VERSION_DATE_2016_02_11);
             service.setUsernameAndPassword("dbd0722f-64ce-4d9e-904c-01ae273be401", "q4nNXEbBFQ8B");
 
-            String text = "I know the times are difficult! Our sales have been "
-                    + "disappointing for the past three quarters for our data analytics "
-                    + "product suite. We have a competitive data analytics product "
-                    + "suite in the industry. But we need to do our job selling it! "
-                    + "We need to acknowledge and fix our sales challenges.";
-
-            ToneAnalysis tone = service.getTone(text);
+            ToneAnalysis tone = service.getTone(mText);
             try {
                 JSONObject toneJSON = new JSONObject(tone.toString());
                 JSONArray toneCategories = toneJSON.getJSONObject("document_tone").getJSONArray("tone_categories");
@@ -98,25 +95,25 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray emotionTones = toneCategories.getJSONObject(0).getJSONArray("tones");
 
                 for (int i = 0; i < emotionTones.length(); i++) {
-                    sentimentMap.put(emotionTones.getJSONObject(i).getString("tone_name"), emotionTones.getJSONObject(i).getDouble("score") * 100);
+                    sentimentMap.put(emotionTones.getJSONObject(i).getString("tone_name"), (int)emotionTones.getJSONObject(i).getDouble("score") * 100);
                 }
 
                 JSONArray writingTones = toneCategories.getJSONObject(1).getJSONArray("tones");
 
                 for (int i = 0; i < writingTones.length(); i++) {
-                    sentimentMap.put(writingTones.getJSONObject(i).getString("tone_name"), emotionTones.getJSONObject(i).getDouble("score") * 100);
+                    sentimentMap.put(writingTones.getJSONObject(i).getString("tone_name"), (int)emotionTones.getJSONObject(i).getDouble("score") * 100);
                 }
 
                 JSONArray socialTones = toneCategories.getJSONObject(2).getJSONArray("tones");
 
                 for (int i = 0; i < socialTones.length(); i++) {
-                    sentimentMap.put(socialTones.getJSONObject(i).getString("tone_name"), emotionTones.getJSONObject(i).getDouble("score") * 100);
+                    sentimentMap.put(socialTones.getJSONObject(i).getString("tone_name"), (int)emotionTones.getJSONObject(i).getDouble("score") * 100);
                 }
 
-                Log.d("debug", sentimentMap.toString());
+                Log.d(TAG, sentimentMap.toString());
 
             } catch(Exception JSONException) {
-                Log.d("debug", "JSON is not correctly formatted!");
+                Log.d(TAG, "JSON is not correctly formatted!");
             }
 
             return true;
@@ -128,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPostExecute(result);
 
             if (result) {
-                Log.d("debug", "Congrats, Catherina!");
+                Log.d(TAG, "Text finished analyzing");
             }
         }
     }
