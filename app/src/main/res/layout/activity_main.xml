@@ -23,6 +23,7 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
             android:src="@drawable/cat_test"
+            android:background="@color/colorBackground"
             android:adjustViewBounds="true" /> <!--true-->
     </RelativeLayout>
 
