@@ -1,16 +1,24 @@
 package com.treehacks.bestteamever.smile;
 
+import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
     private Integer happyImages[] = {R.drawable.motivation1, R.drawable.motivation2, R.drawable.motivation3, R.drawable.motivation5,
-                                        R.drawable.motivation6, R.drawable.motivation7, R.drawable.motivation8, R.drawable.motivation9,
-                                    R.drawable.motivation10, R.drawable.motivation11, R.drawable.motivation12, R.drawable.motivation13,
-                                    R.drawable.motivation14};
+            R.drawable.motivation6, R.drawable.motivation7, R.drawable.motivation8, R.drawable.motivation9,
+            R.drawable.motivation10, R.drawable.motivation11, R.drawable.motivation12, R.drawable.motivation13,
+            R.drawable.motivation14};
     private int currImage = 0;
 
 
@@ -20,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setInitialImage();
         setImageRotateListener();
+        setCallButtonListener();
     }
 
 
@@ -49,5 +58,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    private void setCallButtonListener() {
+        final Button callButton = (Button) findViewById(R.id.call_button);
+        Log.e("message", "call button clicked!");
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                try {
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    String teleString = getString(R.string.telephoneParseStr);
+                    callIntent.setData(Uri.parse(teleString));
+                    startActivity(callIntent);
+                } catch (ActivityNotFoundException e) {
+                    Log.e("problem", "Call failed", e);
+                }
+            }
+        });
+    }
 
 }
