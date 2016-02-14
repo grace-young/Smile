@@ -1,7 +1,8 @@
 package com.treehacks.bestteamever.smile;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.RadarChart;
@@ -29,9 +30,12 @@ public class GraphActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
 
+        Intent intent = getIntent();
+        int[] yVals = intent.getIntArrayExtra("yValues");
+
         mChart = (RadarChart) findViewById(R.id.chart);
 
-        setData();
+        setData(yVals);
 
         mChart.animateXY(
                 1400, 1400,
@@ -40,12 +44,12 @@ public class GraphActivity extends AppCompatActivity {
 
         XAxis xAxis = mChart.getXAxis();
 //        xAxis.setTypeface(tf);
-        xAxis.setTextSize(9f);
+        xAxis.setTextSize(14f);
 
         YAxis yAxis = mChart.getYAxis();
 //        yAxis.setTypeface(tf);
         yAxis.setLabelCount(5, false);
-        yAxis.setTextSize(9f);
+        yAxis.setTextSize(14f);
         yAxis.setAxisMinValue(0f);
 
         Legend l = mChart.getLegend();
@@ -53,32 +57,36 @@ public class GraphActivity extends AppCompatActivity {
         l.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
 //        l.setTypeface(tf);
 //        l.setXEntrySpace(20f);
+        l.setTextSize(16f);
         l.setYEntrySpace(5f);
 
         mChart.setDescription(null);
     }
 
-    public void setData() {
+    public void setData(int[] y2) {
 
         float mult = 50;
         int cnt = mEmotions.length;
 
-        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
-        ArrayList<Entry> yVals2 = new ArrayList<Entry>();
+        ArrayList<Entry> yVals1 = new ArrayList<>();
+        ArrayList<Entry> yVals2 = new ArrayList<>();
 
         // IMPORTANT: In a PieChart, no values (Entry) should have the same
         // xIndex (even if from different DataSets), since no values can be
         // drawn above each other.
         for (int i = 0; i < cnt; i++) {
-//            yVals1.add(new Entry((float) (Math.random() * mult) + mult / 2, i));
             yVals1.add(new Entry((float) (Math.random() * mult) + mult / 2, i));
         }
-
-        for (int i = 0; i < cnt; i++) {
-            yVals2.add(new Entry((float) (Math.random() * mult) + mult / 2, i));
+        
+        for (int i = 0; i < y2.length; i++) {
+            yVals2.add(new Entry((float) y2[i], i));
         }
 
-        ArrayList<String> xVals = new ArrayList<String>();
+//        for (int i = 0; i < cnt; i++) {
+//            yVals2.add(new Entry((float) (Math.random() * mult) + mult / 2, i));
+//        }
+
+        ArrayList<String> xVals = new ArrayList<>();
 
         for (int i = 0; i < cnt; i++)
             xVals.add(mEmotions[i % mEmotions.length]);
@@ -101,7 +109,7 @@ public class GraphActivity extends AppCompatActivity {
 
         RadarData data = new RadarData(xVals, sets);
 //        data.setValueTypeface(tf);
-        data.setValueTextSize(8f);
+//        data.setValueTextSize(12f);
         data.setDrawValues(false);
 
         mChart.setData(data);
