@@ -3,7 +3,7 @@
     package="com.treehacks.bestteamever.smile">
 
     <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -18,6 +18,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".GraphActivity"></activity>
     </application>
 
 </manifest>

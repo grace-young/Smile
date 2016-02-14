@@ -95,30 +95,29 @@ public class MainActivity extends AppCompatActivity {
                 JSONArray emotionTones = toneCategories.getJSONObject(0).getJSONArray("tones");
 
                 for (int i = 0; i < emotionTones.length(); i++) {
-                    sentimentMap.put(emotionTones.getJSONObject(i).getString("tone_name"), (int)emotionTones.getJSONObject(i).getDouble("score") * 100);
+                    sentimentMap.put(emotionTones.getJSONObject(i).getString("tone_name"), (int) emotionTones.getJSONObject(i).getDouble("score") * 100);
                 }
 
                 JSONArray writingTones = toneCategories.getJSONObject(1).getJSONArray("tones");
 
                 for (int i = 0; i < writingTones.length(); i++) {
-                    sentimentMap.put(writingTones.getJSONObject(i).getString("tone_name"), (int)emotionTones.getJSONObject(i).getDouble("score") * 100);
+                    sentimentMap.put(writingTones.getJSONObject(i).getString("tone_name"), (int) emotionTones.getJSONObject(i).getDouble("score") * 100);
                 }
 
                 JSONArray socialTones = toneCategories.getJSONObject(2).getJSONArray("tones");
 
                 for (int i = 0; i < socialTones.length(); i++) {
-                    sentimentMap.put(socialTones.getJSONObject(i).getString("tone_name"), (int)emotionTones.getJSONObject(i).getDouble("score") * 100);
+                    sentimentMap.put(socialTones.getJSONObject(i).getString("tone_name"), (int) emotionTones.getJSONObject(i).getDouble("score") * 100);
                 }
 
                 Log.d(TAG, sentimentMap.toString());
 
-            } catch(Exception JSONException) {
+            } catch (Exception JSONException) {
                 Log.d(TAG, "JSON is not correctly formatted!");
             }
 
             return true;
         }
-
 
         @Override
         protected void onPostExecute(Boolean result) {
