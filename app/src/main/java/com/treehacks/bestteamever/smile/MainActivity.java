@@ -1,8 +1,10 @@
 package com.treehacks.bestteamever.smile;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Telephony;
@@ -30,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
 
     private Integer happyImages[] = {R.drawable.motivation1, R.drawable.motivation2, R.drawable.motivation3, R.drawable.motivation5,
-                                        R.drawable.motivation6, R.drawable.motivation7, R.drawable.motivation8, R.drawable.motivation9,
-                                    R.drawable.motivation10, R.drawable.motivation11, R.drawable.motivation12, R.drawable.motivation13,
-                                    R.drawable.motivation14};
+            R.drawable.motivation6, R.drawable.motivation7, R.drawable.motivation8, R.drawable.motivation9,
+            R.drawable.motivation10, R.drawable.motivation11, R.drawable.motivation12, R.drawable.motivation13,
+            R.drawable.motivation14, R.drawable.motivation15};
     private int currImage = 0;
 
     private String mTodayText = "";
@@ -55,10 +57,10 @@ public class MainActivity extends AppCompatActivity {
 
         setInitialImage();
         setImageRotateListener();
+        setCallButtonListener();
 
         setAnalysisButtonListener();
         setHistoryButtonListener();
-
 
         long startOfDayTime = calculateStartOfDay();
         long startOfYesterdayTime = calculateStartOfYesterday();
@@ -192,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
                 currImage++;
-                if (currImage == 12) {
+                if (currImage == 14) {
                     currImage = 0;
                 }
                 setCurrentImage();
@@ -296,6 +298,24 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception JSONException) {
             Log.d(TAG, "JSON is not correctly formatted!");
         }
+    }
+
+    private void setCallButtonListener() {
+        final Button callButton = (Button) findViewById(R.id.call_button);
+        Log.e("message", "call button clicked!");
+        callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                try {
+                    Intent callIntent = new Intent(Intent.ACTION_CALL);
+                    String teleString = getString(R.string.telephoneParseStr);
+                    callIntent.setData(Uri.parse(teleString));
+                    startActivity(callIntent);
+                } catch (ActivityNotFoundException e) {
+                    Log.e("problem", "Call failed", e);
+                }
+            }
+        });
     }
 }
 
