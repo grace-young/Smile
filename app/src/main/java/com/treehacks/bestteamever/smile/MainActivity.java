@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setInitialImage();
         setImageRotateListener();
         setCallButtonListener();
+        setSurveyButtonListener();
 
         setAnalysisButtonListener();
         setHistoryButtonListener();
@@ -68,15 +69,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         String todaySelection = Telephony.Sms.Sent.DATE + " > ?";
-        String[] todaySelectionArgs = { String.valueOf(startOfDayTime) };
+        String[] todaySelectionArgs = {String.valueOf(startOfDayTime)};
         List<String> todaySentTexts = getSentTexts(todaySelection, todaySelectionArgs);
 
         String yesterdaySelection = Telephony.Sms.Sent.DATE + " > ? AND " + Telephony.Sms.Sent.DATE + " < ?";
-        String[] yesterdaySelectionArgs = { String.valueOf(startOfYesterdayTime), String.valueOf(startOfDayTime) };
+        String[] yesterdaySelectionArgs = {String.valueOf(startOfYesterdayTime), String.valueOf(startOfDayTime)};
         List<String> yesterdaySentTexts = getSentTexts(yesterdaySelection, yesterdaySelectionArgs);
 
         String pastWeekSelection = Telephony.Sms.Sent.DATE + " > ?";
-        String[] pastWeekSelectionArgs = { String.valueOf(startOfPastWeekTime) };
+        String[] pastWeekSelectionArgs = {String.valueOf(startOfPastWeekTime)};
         List<String> pastWeekSentTexts = getSentTexts(pastWeekSelection, pastWeekSelectionArgs);
 
         if (todaySentTexts == null || todaySentTexts.size() == 0) {
@@ -202,6 +203,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setSurveyButtonListener() {
+        final Button surveyButton = (Button) findViewById(R.id.surveyButton);
+
+        surveyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                Intent intent = new Intent(getApplicationContext(), SurveyActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
     private void setInitialImage() {
         setCurrentImage();
     }
@@ -296,13 +309,13 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, map.toString());
 
         } catch (Exception JSONException) {
-            Log.d(TAG, "JSON is not correctly formatted!");
+            Log.e(TAG, "JSON is not correctly formatted!");
         }
     }
 
     private void setCallButtonListener() {
         final Button callButton = (Button) findViewById(R.id.call_button);
-        Log.e("message", "call button clicked!");
+        Log.d(TAG, "call button clicked!");
         callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
@@ -312,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
                     callIntent.setData(Uri.parse(teleString));
                     startActivity(callIntent);
                 } catch (ActivityNotFoundException e) {
-                    Log.e("problem", "Call failed", e);
+                    Log.e(TAG, "Call failed", e);
                 }
             }
         });

@@ -13,7 +13,7 @@
         android:textStyle="bold"
         android:text="Click an item below to see the emotions you selected for that day."
         android:textSize="16sp"
-        android:background="@android:color/darker_gray"
+        android:background="#808080"
         android:textColor="@android:color/white"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"

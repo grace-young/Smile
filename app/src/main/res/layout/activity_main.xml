@@ -33,7 +33,8 @@
         android:background="@color/colorButton0"
         android:layout_marginTop="5dp"
         android:stateListAnimator="@null"
-        android:text="Daily Check-In" />
+        android:text="Daily Check-In"
+        android:id="@+id/surveyButton" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
