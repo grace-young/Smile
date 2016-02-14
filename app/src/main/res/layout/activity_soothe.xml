@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:orientation="vertical"
+    android:background="@color/colorBackground"
+    tools:context="com.treehacks.bestteamever.smile.Soothe">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:background="@color/colorBackground"
+        android:layout_gravity="center_horizontal|bottom"
+        >
+        <ImageView
+            android:id="@+id/imageDisplay"
+            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"/>
+
+        <!-- add meera's buttons here-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="250dp"
+            android:gravity="bottom|center_horizontal">
+            <TextView
+                android:id="@+id/middleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Enjoy this soothing breathing exercise :)"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="150dp"
+                android:orientation="horizontal">
+
+                <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:layout_marginLeft="80dp"
+                    android:layout_marginRight="10dp"
+                android:text="Play"/>
+
+                <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+
+                android:text="Stop"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+
+
+
+    <!--
+    <Button
+        android:id="@+id/btnRotateImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next Image" />
+    -->
+</LinearLayout>
+
+
+

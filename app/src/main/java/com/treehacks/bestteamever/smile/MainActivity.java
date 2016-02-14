@@ -77,4 +77,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
+
+
+    public void sootheClick(View view) {
+
+        Intent sootheIntent = new Intent(this, Soothe.class);
+        Log.d("clicked", "soothe clicked");
+        startActivity(sootheIntent);
+    }
 }
