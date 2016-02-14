@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Smile</string>\
     <string name="telephoneParseStr">tel:5555555555</string>
+    <string name="title_activity_spash">Spash</string>
 </resources>
