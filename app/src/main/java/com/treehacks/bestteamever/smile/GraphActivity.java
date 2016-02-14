@@ -3,6 +3,8 @@ package com.treehacks.bestteamever.smile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.RadarChart;
@@ -21,6 +23,14 @@ public class GraphActivity extends AppCompatActivity {
 
     private RadarChart mChart;
 
+    private boolean today = true;
+    private boolean yesterday = true;
+    private boolean pastWeek = true;
+
+    private float[] todayYVals;
+    private float[] yesterdayYVals;
+    private float[] pastWeekYVals;
+
     private String[] mEmotions = new String[]{
             "Anger", "Disgust", "Fear", "Joy", "Sadness"
     };
@@ -31,11 +41,25 @@ public class GraphActivity extends AppCompatActivity {
         setContentView(R.layout.activity_graph);
 
         Intent intent = getIntent();
-        int[] yVals = intent.getIntArrayExtra("yValues");
+        todayYVals = intent.getFloatArrayExtra("todayYValues");
+        yesterdayYVals = intent.getFloatArrayExtra("yesterdayYValues");
+        pastWeekYVals = intent.getFloatArrayExtra("pastWeekYValues");
+
+        if (todayYVals == null) {
+            today = false;
+        }
+        if (yesterdayYVals == null) {
+            yesterday = false;
+        }
+        if (pastWeekYVals == null) {
+            pastWeek = false;
+        }
+
+        setCheckBoxListeners();
 
         mChart = (RadarChart) findViewById(R.id.chart);
 
-        setData(yVals);
+        setData();
 
         mChart.animateXY(
                 1400, 1400,
@@ -53,7 +77,6 @@ public class GraphActivity extends AppCompatActivity {
         yAxis.setAxisMinValue(0f);
 
         Legend l = mChart.getLegend();
-        l.setCustom(new int[] { ColorTemplate.VORDIPLOM_COLORS[4], ColorTemplate.VORDIPLOM_COLORS[0] }, new String[] { "Yesterday", "Today" });
         l.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
 //        l.setTypeface(tf);
 //        l.setXEntrySpace(20f);
@@ -63,49 +86,121 @@ public class GraphActivity extends AppCompatActivity {
         mChart.setDescription(null);
     }
 
-    public void setData(int[] y2) {
+    private void setCheckBoxListeners() {
+        CheckBox todayCheckbox = (CheckBox) findViewById(R.id.todayCheckbox);
+        CheckBox yesterdayCheckbox = (CheckBox) findViewById(R.id.yesterdayCheckbox);
+        CheckBox pastWeekCheckbox = (CheckBox) findViewById(R.id.pastWeekCheckbox);
+
+        todayCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    today = true;
+                    setData();
+                } else {
+                    today = false;
+                    setData();
+                }
+            }
+        });
+
+        yesterdayCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    yesterday = true;
+                    setData();
+                } else {
+                    yesterday = false;
+                    setData();
+                }
+            }
+        });
+
+        pastWeekCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    pastWeek = true;
+                    setData();
+                } else {
+                    pastWeek = false;
+                    setData();
+                }
+            }
+        });
+    }
+
+    public void setData() {
+
+        if (!today && !yesterday && !pastWeek) {
+            mChart.clear();
+            return;
+        }
 
         float mult = 50;
         int cnt = mEmotions.length;
 
         ArrayList<Entry> yVals1 = new ArrayList<>();
         ArrayList<Entry> yVals2 = new ArrayList<>();
+        ArrayList<Entry> yVals3 = new ArrayList<>();
 
         // IMPORTANT: In a PieChart, no values (Entry) should have the same
         // xIndex (even if from different DataSets), since no values can be
         // drawn above each other.
-        for (int i = 0; i < cnt; i++) {
-            yVals1.add(new Entry((float) (Math.random() * mult) + mult / 2, i));
-        }
-        
-        for (int i = 0; i < y2.length; i++) {
-            yVals2.add(new Entry((float) y2[i], i));
+
+        if (today) {
+            for (int i = 0; i < cnt; i++) {
+                yVals1.add(new Entry((float) todayYVals[i], i));
+            }
         }
 
-//        for (int i = 0; i < cnt; i++) {
-//            yVals2.add(new Entry((float) (Math.random() * mult) + mult / 2, i));
-//        }
+        if (yesterday) {
+            for (int i = 0; i < cnt; i++) {
+                yVals2.add(new Entry((float) yesterdayYVals[i], i));
+            }
+        }
+
+        if (pastWeek) {
+            for (int i = 0; i < cnt; i++) {
+                yVals3.add(new Entry((float) pastWeekYVals[i], i));
+            }
+        }
 
         ArrayList<String> xVals = new ArrayList<>();
 
         for (int i = 0; i < cnt; i++)
             xVals.add(mEmotions[i % mEmotions.length]);
 
-        RadarDataSet set1 = new RadarDataSet(yVals1, "Set 1");
-        set1.setColor(ColorTemplate.VORDIPLOM_COLORS[4]);
-        set1.setFillColor(ColorTemplate.VORDIPLOM_COLORS[4]);
-        set1.setDrawFilled(true);
-        set1.setLineWidth(2f);
-
-        RadarDataSet set2 = new RadarDataSet(yVals2, "Set 2");
-        set2.setColor(ColorTemplate.VORDIPLOM_COLORS[0]);
-        set2.setFillColor(ColorTemplate.VORDIPLOM_COLORS[0]);
-        set2.setDrawFilled(true);
-        set2.setLineWidth(2f);
-
         ArrayList<IRadarDataSet> sets = new ArrayList<IRadarDataSet>();
-        sets.add(set1);
-        sets.add(set2);
+        RadarDataSet set1, set2, set3;
+
+        if (today) {
+            set1 = new RadarDataSet(yVals1, "Today");
+            set1.setColor(ColorTemplate.VORDIPLOM_COLORS[4]);
+            set1.setFillColor(ColorTemplate.VORDIPLOM_COLORS[4]);
+            set1.setDrawFilled(true);
+            set1.setLineWidth(2f);
+            sets.add(set1);
+        }
+
+        if (yesterday) {
+            set2 = new RadarDataSet(yVals2, "Yesterday");
+            set2.setColor(ColorTemplate.VORDIPLOM_COLORS[0]);
+            set2.setFillColor(ColorTemplate.VORDIPLOM_COLORS[0]);
+            set2.setDrawFilled(true);
+            set2.setLineWidth(2f);
+            sets.add(set2);
+        }
+
+        if (pastWeek) {
+            set3 = new RadarDataSet(yVals3, "Past Week");
+            set3.setColor(ColorTemplate.VORDIPLOM_COLORS[2]);
+            set3.setFillColor(ColorTemplate.VORDIPLOM_COLORS[2]);
+            set3.setDrawFilled(true);
+            set3.setLineWidth(2f);
+            sets.add(set3);
+        }
 
         RadarData data = new RadarData(xVals, sets);
 //        data.setValueTypeface(tf);
@@ -113,7 +208,6 @@ public class GraphActivity extends AppCompatActivity {
         data.setDrawValues(false);
 
         mChart.setData(data);
-
         mChart.invalidate();
     }
 }

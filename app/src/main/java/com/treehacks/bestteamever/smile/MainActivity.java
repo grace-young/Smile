@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.ToneAnalyzer;
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.model.ToneAnalysis;
@@ -34,9 +35,18 @@ public class MainActivity extends AppCompatActivity {
                                     R.drawable.motivation14};
     private int currImage = 0;
 
-    private String mText = "";
+    private String mTodayText = "";
+    private String mYesterdayText = "";
+    private String mPastWeekText = "";
+
+    private boolean today;
+    private boolean yesterday;
+    private boolean pastWeek;
+
     private boolean mAnalyzingComplete = false;
-    private HashMap<String, Integer> mSentimentMap = new HashMap<>();
+    private HashMap<String, Float> mTodaySentimentMap = new HashMap<>();
+    private HashMap<String, Float> mYesterdaySentimentMap = new HashMap<>();
+    private HashMap<String, Float> mPastWeekSentimentMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,32 +62,111 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mAnalyzingComplete) {
                     Intent intent = new Intent(getApplicationContext(), GraphActivity.class);
-                    int[] yValues = {
-                            mSentimentMap.get("Anger"),
-                            mSentimentMap.get("Disgust"),
-                            mSentimentMap.get("Fear"),
-                            mSentimentMap.get("Joy"),
-                            mSentimentMap.get("Sadness")
-                    };
-                    intent.putExtra("yValues", yValues);
+                    if (today) {
+                        float[] todayYValues = {
+                                mTodaySentimentMap.get("Anger"),
+                                mTodaySentimentMap.get("Disgust"),
+                                mTodaySentimentMap.get("Fear"),
+                                mTodaySentimentMap.get("Joy"),
+                                mTodaySentimentMap.get("Sadness")
+                        };
+                        intent.putExtra("todayYValues", todayYValues);
+                    }
+                    if (yesterday) {
+                        float[] yesterdayYValues = {
+                                mYesterdaySentimentMap.get("Anger"),
+                                mYesterdaySentimentMap.get("Disgust"),
+                                mYesterdaySentimentMap.get("Fear"),
+                                mYesterdaySentimentMap.get("Joy"),
+                                mYesterdaySentimentMap.get("Sadness")
+                        };
+                        intent.putExtra("yesterdayYValues", yesterdayYValues);
+                    }
+                    if (pastWeek) {
+                        float[] pastWeekYValues = {
+                                mPastWeekSentimentMap.get("Anger"),
+                                mPastWeekSentimentMap.get("Disgust"),
+                                mPastWeekSentimentMap.get("Fear"),
+                                mPastWeekSentimentMap.get("Joy"),
+                                mPastWeekSentimentMap.get("Sadness")
+                        };
+                        intent.putExtra("pastWeekYValues", pastWeekYValues);
+                    }
                     startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Analyzing still in progress!", Toast.LENGTH_LONG).show();
                 }
             }
         });
 
-        List<String> sentTexts = getSentTextsFromCurrentDay();
+        long startOfDayTime = calculateStartOfDay();
+        long startOfYesterdayTime = calculateStartOfYesterday();
+        long startOfPastWeekTime = calculateStartOfPastWeekTime();
 
-        if (sentTexts == null) {
-            Log.e(TAG, "No texts sent in last day!");
+
+        String todaySelection = Telephony.Sms.Sent.DATE + " > ?";
+        String[] todaySelectionArgs = { String.valueOf(startOfDayTime) };
+        List<String> todaySentTexts = getSentTexts(todaySelection, todaySelectionArgs);
+
+        String yesterdaySelection = Telephony.Sms.Sent.DATE + " > ? AND " + Telephony.Sms.Sent.DATE + " < ?";
+        String[] yesterdaySelectionArgs = { String.valueOf(startOfYesterdayTime), String.valueOf(startOfDayTime) };
+        List<String> yesterdaySentTexts = getSentTexts(yesterdaySelection, yesterdaySelectionArgs);
+
+        String pastWeekSelection = Telephony.Sms.Sent.DATE + " > ?";
+        String[] pastWeekSelectionArgs = { String.valueOf(startOfPastWeekTime) };
+        List<String> pastWeekSentTexts = getSentTexts(pastWeekSelection, pastWeekSelectionArgs);
+
+        if (todaySentTexts == null || todaySentTexts.size() == 0) {
+            today = false;
         } else {
-//            for (String s : sentTexts) {
-//                Log.d(TAG, s);
+            today = true;
+            mTodayText = todaySentTexts.toString();
+        }
+        if (yesterdaySentTexts == null || yesterdaySentTexts.size() == 0) {
+            yesterday = false;
+        } else {
+            yesterday = true;
+            mYesterdayText = yesterdaySentTexts.toString();
+        }
+        if (pastWeekSentTexts == null || pastWeekSentTexts.size() == 0) {
+            pastWeek = false;
+        } else {
+            pastWeek = true;
+            mPastWeekText = pastWeekSentTexts.toString();
+        }
+
+//            for (String s : todaySentTexts) {
+//                Log.d(TAG, "today: " + s);
+//            }
+//            for (String s : yesterdaySentTexts) {
+//                Log.d(TAG, "yesterday: " + s);
+//            }
+//            for (String s : pastWeekSentTexts) {
+//                Log.d(TAG, "past week: " + s);
 //            }
 
-            mText = sentTexts.toString();
-            ToneTask toneTask = new ToneTask();
-            toneTask.execute();
-        }
+        ToneTask toneTask = new ToneTask();
+        toneTask.execute();
+    }
+
+    private long calculateStartOfDay() {
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.withTimeAtStartOfDay();
+        return dateTime.getMillis();
+    }
+
+    private long calculateStartOfYesterday() {
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.withTimeAtStartOfDay();
+        dateTime = dateTime.minusDays(1);
+        return dateTime.getMillis();
+    }
+
+    private long calculateStartOfPastWeekTime() {
+        DateTime dateTime = new DateTime();
+        dateTime = dateTime.withTimeAtStartOfDay();
+        dateTime = dateTime.minusDays(7);
+        return dateTime.getMillis();
     }
 
     private void setImageRotateListener() {
@@ -103,16 +192,9 @@ public class MainActivity extends AppCompatActivity {
         imageView.setImageResource(happyImages[currImage]);
     }
 
-    private List<String> getSentTextsFromCurrentDay() {
+    private List<String> getSentTexts(String selection, String[] selectionArgs) {
         List<String> sentTexts = new ArrayList<>();
         ContentResolver contentResolver = getContentResolver();
-
-        DateTime dateTime = new DateTime();
-        dateTime = dateTime.withTimeAtStartOfDay();
-        long startOfDayTime = dateTime.getMillis();
-
-        String selection = Telephony.Sms.Sent.DATE + " > ?";
-        String[] selectionArgs = { String.valueOf(startOfDayTime) };
 
         Cursor cursor = contentResolver.query(Telephony.Sms.Sent.CONTENT_URI,
                 new String[]{Telephony.Sms.Sent.BODY},
@@ -121,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                 Telephony.Sms.Sent.DEFAULT_SORT_ORDER);
 
         if (cursor == null) {
-            return null;
+            return sentTexts;
         }
 
         if (cursor.moveToFirst()) {
@@ -142,33 +224,17 @@ public class MainActivity extends AppCompatActivity {
             ToneAnalyzer service = new ToneAnalyzer(ToneAnalyzer.VERSION_DATE_2016_02_11);
             service.setUsernameAndPassword("dbd0722f-64ce-4d9e-904c-01ae273be401", "q4nNXEbBFQ8B");
 
-            ToneAnalysis tone = service.getTone(mText);
-            try {
-                JSONObject toneJSON = new JSONObject(tone.toString());
-                JSONArray toneCategories = toneJSON.getJSONObject("document_tone").getJSONArray("tone_categories");
-
-                JSONArray emotionTones = toneCategories.getJSONObject(0).getJSONArray("tones");
-
-                for (int i = 0; i < emotionTones.length(); i++) {
-                    mSentimentMap.put(emotionTones.getJSONObject(i).getString("tone_name"), (int) (emotionTones.getJSONObject(i).getDouble("score") * 100));
-                }
-
-                JSONArray writingTones = toneCategories.getJSONObject(1).getJSONArray("tones");
-
-                for (int i = 0; i < writingTones.length(); i++) {
-                    mSentimentMap.put(writingTones.getJSONObject(i).getString("tone_name"), (int) (emotionTones.getJSONObject(i).getDouble("score") * 100));
-                }
-
-                JSONArray socialTones = toneCategories.getJSONObject(2).getJSONArray("tones");
-
-                for (int i = 0; i < socialTones.length(); i++) {
-                    mSentimentMap.put(socialTones.getJSONObject(i).getString("tone_name"), (int) (emotionTones.getJSONObject(i).getDouble("score") * 100));
-                }
-
-                Log.d(TAG, mSentimentMap.toString());
-
-            } catch (Exception JSONException) {
-                Log.d(TAG, "JSON is not correctly formatted!");
+            if (today) {
+                ToneAnalysis todayTone = service.getTone(mTodayText);
+                parseAndStoreResults(todayTone, mTodaySentimentMap);
+            }
+            if (yesterday) {
+                ToneAnalysis yesterdayTone = service.getTone(mYesterdayText);
+                parseAndStoreResults(yesterdayTone, mYesterdaySentimentMap);
+            }
+            if (pastWeek) {
+                ToneAnalysis pastWeekTone = service.getTone(mPastWeekText);
+                parseAndStoreResults(pastWeekTone, mPastWeekSentimentMap);
             }
 
             return true;
@@ -182,6 +248,36 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "Text finished analyzing");
                 mAnalyzingComplete = true;
             }
+        }
+    }
+
+    private void parseAndStoreResults(ToneAnalysis tone, HashMap<String, Float> map) {
+        try {
+            JSONObject toneJSON = new JSONObject(tone.toString());
+            JSONArray toneCategories = toneJSON.getJSONObject("document_tone").getJSONArray("tone_categories");
+
+            JSONArray emotionTones = toneCategories.getJSONObject(0).getJSONArray("tones");
+
+            for (int i = 0; i < emotionTones.length(); i++) {
+                map.put(emotionTones.getJSONObject(i).getString("tone_name"), (float) (emotionTones.getJSONObject(i).getDouble("score") * 100));
+            }
+
+            JSONArray writingTones = toneCategories.getJSONObject(1).getJSONArray("tones");
+
+            for (int i = 0; i < writingTones.length(); i++) {
+                map.put(writingTones.getJSONObject(i).getString("tone_name"), (float) (emotionTones.getJSONObject(i).getDouble("score") * 100));
+            }
+
+            JSONArray socialTones = toneCategories.getJSONObject(2).getJSONArray("tones");
+
+            for (int i = 0; i < socialTones.length(); i++) {
+                map.put(socialTones.getJSONObject(i).getString("tone_name"), (float) (emotionTones.getJSONObject(i).getDouble("score") * 100));
+            }
+
+            Log.d(TAG, map.toString());
+
+        } catch (Exception JSONException) {
+            Log.d(TAG, "JSON is not correctly formatted!");
         }
     }
 }
