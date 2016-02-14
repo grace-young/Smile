@@ -11,16 +11,17 @@
     android:orientation="vertical"
     tools:context="com.treehacks.bestteamever.smile.MainActivity">
 
-
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.5"
+        android:background="@color/colorBackground"
         >
-        <ImageView
+        <ImageButton
+            android:id="@+id/motivation_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scaleType="centerCrop"
             android:src="@drawable/cat_test"
             android:adjustViewBounds="true" /> <!--true-->
     </RelativeLayout>
@@ -28,7 +29,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorButton1"
+        android:background="@color/colorButton0"
         android:layout_marginTop="5dp"
         android:stateListAnimator="@null"
         android:text="Daily Check-In" />
@@ -37,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:stateListAnimator="@null"
-        android:background="@color/colorButton2"
+        android:background="@color/colorButton1"
         android:text="Soothe Yourself" />
 
     <!-- <Button
@@ -45,6 +46,14 @@
         android:layout_height="wrap_content"
         android:text="button 4" />
         -->
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:stateListAnimator="@null"
+        android:background="@color/colorButton2"
+        android:text="Progress" />
 
     <Button
         android:layout_width="match_parent"
