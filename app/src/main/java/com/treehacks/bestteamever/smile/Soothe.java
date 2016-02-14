@@ -1,45 +1,28 @@
 package com.treehacks.bestteamever.smile;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
-import android.support.v7.app.AppCompatActivity;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.session.MediaController;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
-
-
-import android.content.Intent;
-import android.media.session.MediaController;
-import android.net.Uri;
-import android.os.Bundle;
-import android.text.Html;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
-
-import android.app.Activity;
-import android.content.Intent;
-import android.media.MediaPlayer.OnCompletionListener;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 
 public class Soothe extends Activity
@@ -243,14 +226,7 @@ public class Soothe extends Activity
             }
         });
 
-
-
-
     }
-
-
-
-
 
     /**
      * Receiving song index from playlist view

@@ -315,10 +315,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setCallButtonListener() {
         final Button callButton = (Button) findViewById(R.id.call_button);
-        Log.d(TAG, "call button clicked!");
         callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
+                Log.d(TAG, "call button clicked!");
                 try {
                     Intent callIntent = new Intent(Intent.ACTION_CALL);
                     String teleString = getString(R.string.telephoneParseStr);
