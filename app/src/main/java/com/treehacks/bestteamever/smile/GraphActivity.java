@@ -1,10 +1,14 @@
 package com.treehacks.bestteamever.smile;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.RadarChart;
@@ -18,6 +22,7 @@ import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GraphActivity extends AppCompatActivity {
 
@@ -55,6 +60,38 @@ public class GraphActivity extends AppCompatActivity {
         if (pastWeekYVals == null) {
             pastWeek = false;
         }
+
+
+        Button shareButton = (Button) findViewById(R.id.shareButton);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!today && !yesterday && !pastWeek) {
+                    Toast.makeText(getApplicationContext(), "No data to send!", Toast.LENGTH_LONG);
+                    return;
+                }
+                String data = "Emotions: " + Arrays.toString(mEmotions) + "\n";
+                if (today) {
+                    data += "Today's data: " + Arrays.toString(todayYVals) + "\n";
+                }
+                if (yesterday) {
+                    data += "Yesterday's data: " + Arrays.toString(yesterdayYVals) + "\n";
+                }
+                if (pastWeek) {
+                    data += "Past Week's data: " + Arrays.toString(pastWeekYVals) + "\n";
+                }
+
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("message/rfc822");
+                i.putExtra(Intent.EXTRA_SUBJECT, "Text Analysis Data");
+                i.putExtra(Intent.EXTRA_TEXT, data);
+                try {
+                    startActivity(Intent.createChooser(i, "Send mail..."));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(getApplicationContext(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         setCheckBoxListeners();
 
