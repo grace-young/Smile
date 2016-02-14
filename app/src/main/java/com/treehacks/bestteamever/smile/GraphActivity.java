@@ -91,6 +91,16 @@ public class GraphActivity extends AppCompatActivity {
         CheckBox yesterdayCheckbox = (CheckBox) findViewById(R.id.yesterdayCheckbox);
         CheckBox pastWeekCheckbox = (CheckBox) findViewById(R.id.pastWeekCheckbox);
 
+        if (!today) {
+            todayCheckbox.setEnabled(false);
+        }
+        if (!yesterday) {
+            yesterdayCheckbox.setEnabled(false);
+        }
+        if (!pastWeek) {
+            pastWeekCheckbox.setEnabled(false);
+        }
+
         todayCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

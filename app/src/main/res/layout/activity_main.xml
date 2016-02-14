@@ -48,14 +48,35 @@
         android:text="button 4" />
         -->
 
-    <Button
-        android:id="@+id/progressButton"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:stateListAnimator="@null"
-        android:background="@color/colorButton2"
-        android:text="Progress" />
+        android:orientation="horizontal"
+        android:weightSum="100">
+
+        <Button
+            android:id="@+id/analysisButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="2dp"
+            android:stateListAnimator="@null"
+            android:background="@color/colorButton2"
+            android:text="Mood Analysis"
+            android:layout_weight="50"/>
+
+        <Button
+            android:id="@+id/historyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="2dp"
+            android:stateListAnimator="@null"
+            android:background="@color/colorButton2"
+            android:text="Mood History"
+            android:layout_weight="50"/>
+
+    </LinearLayout>
 
     <Button
         android:layout_width="match_parent"

@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         setInitialImage();
         setImageRotateListener();
 
-        Button button = (Button) findViewById(R.id.progressButton);
+        Button button = (Button) findViewById(R.id.analysisButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
