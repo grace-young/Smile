@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private Integer happyImages[] = {R.drawable.motivation1, R.drawable.motivation2, R.drawable.motivation3, R.drawable.motivation5,
             R.drawable.motivation6, R.drawable.motivation7, R.drawable.motivation8, R.drawable.motivation9,
             R.drawable.motivation10, R.drawable.motivation11, R.drawable.motivation12, R.drawable.motivation13,
-            R.drawable.motivation14};
+            R.drawable.motivation14, R.drawable.motivation15};
     private int currImage = 0;
 
 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
                 currImage++;
-                if (currImage == 12) {
+                if (currImage == 14) {
                     currImage = 0;
                 }
                 setCurrentImage();
