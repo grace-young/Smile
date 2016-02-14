@@ -56,48 +56,9 @@ public class MainActivity extends AppCompatActivity {
         setInitialImage();
         setImageRotateListener();
 
-        Button button = (Button) findViewById(R.id.analysisButton);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mAnalyzingComplete) {
-                    Intent intent = new Intent(getApplicationContext(), GraphActivity.class);
-                    if (today) {
-                        float[] todayYValues = {
-                                mTodaySentimentMap.get("Anger"),
-                                mTodaySentimentMap.get("Disgust"),
-                                mTodaySentimentMap.get("Fear"),
-                                mTodaySentimentMap.get("Joy"),
-                                mTodaySentimentMap.get("Sadness")
-                        };
-                        intent.putExtra("todayYValues", todayYValues);
-                    }
-                    if (yesterday) {
-                        float[] yesterdayYValues = {
-                                mYesterdaySentimentMap.get("Anger"),
-                                mYesterdaySentimentMap.get("Disgust"),
-                                mYesterdaySentimentMap.get("Fear"),
-                                mYesterdaySentimentMap.get("Joy"),
-                                mYesterdaySentimentMap.get("Sadness")
-                        };
-                        intent.putExtra("yesterdayYValues", yesterdayYValues);
-                    }
-                    if (pastWeek) {
-                        float[] pastWeekYValues = {
-                                mPastWeekSentimentMap.get("Anger"),
-                                mPastWeekSentimentMap.get("Disgust"),
-                                mPastWeekSentimentMap.get("Fear"),
-                                mPastWeekSentimentMap.get("Joy"),
-                                mPastWeekSentimentMap.get("Sadness")
-                        };
-                        intent.putExtra("pastWeekYValues", pastWeekYValues);
-                    }
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Analyzing still in progress!", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+        setAnalysisButtonListener();
+        setHistoryButtonListener();
+
 
         long startOfDayTime = calculateStartOfDay();
         long startOfYesterdayTime = calculateStartOfYesterday();
@@ -147,6 +108,62 @@ public class MainActivity extends AppCompatActivity {
 
         ToneTask toneTask = new ToneTask();
         toneTask.execute();
+    }
+
+    private void setAnalysisButtonListener() {
+        Button button = (Button) findViewById(R.id.analysisButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAnalyzingComplete) {
+                    Intent intent = new Intent(getApplicationContext(), GraphActivity.class);
+                    if (today) {
+                        float[] todayYValues = {
+                                mTodaySentimentMap.get("Anger"),
+                                mTodaySentimentMap.get("Disgust"),
+                                mTodaySentimentMap.get("Fear"),
+                                mTodaySentimentMap.get("Joy"),
+                                mTodaySentimentMap.get("Sadness")
+                        };
+                        intent.putExtra("todayYValues", todayYValues);
+                    }
+                    if (yesterday) {
+                        float[] yesterdayYValues = {
+                                mYesterdaySentimentMap.get("Anger"),
+                                mYesterdaySentimentMap.get("Disgust"),
+                                mYesterdaySentimentMap.get("Fear"),
+                                mYesterdaySentimentMap.get("Joy"),
+                                mYesterdaySentimentMap.get("Sadness")
+                        };
+                        intent.putExtra("yesterdayYValues", yesterdayYValues);
+                    }
+                    if (pastWeek) {
+                        float[] pastWeekYValues = {
+                                mPastWeekSentimentMap.get("Anger"),
+                                mPastWeekSentimentMap.get("Disgust"),
+                                mPastWeekSentimentMap.get("Fear"),
+                                mPastWeekSentimentMap.get("Joy"),
+                                mPastWeekSentimentMap.get("Sadness")
+                        };
+                        intent.putExtra("pastWeekYValues", pastWeekYValues);
+                    }
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Analyzing still in progress!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void setHistoryButtonListener() {
+        Button button = (Button) findViewById(R.id.historyButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ResultsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private long calculateStartOfDay() {

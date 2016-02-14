@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".GraphActivity" />
-        <activity android:name=".ResultsActivity"></activity>
+        <activity android:name=".ResultsActivity" />
     </application>
 
 </manifest>

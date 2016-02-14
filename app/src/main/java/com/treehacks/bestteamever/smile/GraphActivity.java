@@ -26,6 +26,7 @@ public class GraphActivity extends AppCompatActivity {
     private boolean today = true;
     private boolean yesterday = true;
     private boolean pastWeek = true;
+    private boolean details = false;
 
     private float[] todayYVals;
     private float[] yesterdayYVals;
@@ -67,19 +68,15 @@ public class GraphActivity extends AppCompatActivity {
                 Easing.EasingOption.EaseInOutQuad);
 
         XAxis xAxis = mChart.getXAxis();
-//        xAxis.setTypeface(tf);
         xAxis.setTextSize(14f);
 
         YAxis yAxis = mChart.getYAxis();
-//        yAxis.setTypeface(tf);
         yAxis.setLabelCount(5, false);
         yAxis.setTextSize(14f);
         yAxis.setAxisMinValue(0f);
 
         Legend l = mChart.getLegend();
         l.setPosition(Legend.LegendPosition.LEFT_OF_CHART);
-//        l.setTypeface(tf);
-//        l.setXEntrySpace(20f);
         l.setTextSize(16f);
         l.setYEntrySpace(5f);
 
@@ -90,6 +87,7 @@ public class GraphActivity extends AppCompatActivity {
         CheckBox todayCheckbox = (CheckBox) findViewById(R.id.todayCheckbox);
         CheckBox yesterdayCheckbox = (CheckBox) findViewById(R.id.yesterdayCheckbox);
         CheckBox pastWeekCheckbox = (CheckBox) findViewById(R.id.pastWeekCheckbox);
+        CheckBox detailsCheckbox = (CheckBox) findViewById(R.id.detailsCheckbox);
 
         if (!today) {
             todayCheckbox.setEnabled(false);
@@ -139,6 +137,19 @@ public class GraphActivity extends AppCompatActivity {
                 }
             }
         });
+
+        detailsCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    details = true;
+                    setData();
+                } else {
+                    details = false;
+                    setData();
+                }
+            }
+        });
     }
 
     public void setData() {
@@ -148,7 +159,6 @@ public class GraphActivity extends AppCompatActivity {
             return;
         }
 
-        float mult = 50;
         int cnt = mEmotions.length;
 
         ArrayList<Entry> yVals1 = new ArrayList<>();
@@ -161,19 +171,19 @@ public class GraphActivity extends AppCompatActivity {
 
         if (today) {
             for (int i = 0; i < cnt; i++) {
-                yVals1.add(new Entry((float) todayYVals[i], i));
+                yVals1.add(new Entry(todayYVals[i], i));
             }
         }
 
         if (yesterday) {
             for (int i = 0; i < cnt; i++) {
-                yVals2.add(new Entry((float) yesterdayYVals[i], i));
+                yVals2.add(new Entry(yesterdayYVals[i], i));
             }
         }
 
         if (pastWeek) {
             for (int i = 0; i < cnt; i++) {
-                yVals3.add(new Entry((float) pastWeekYVals[i], i));
+                yVals3.add(new Entry(pastWeekYVals[i], i));
             }
         }
 
@@ -213,9 +223,10 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         RadarData data = new RadarData(xVals, sets);
-//        data.setValueTypeface(tf);
-//        data.setValueTextSize(12f);
-        data.setDrawValues(false);
+        data.setValueTextSize(12f);
+        if (!details) {
+            data.setDrawValues(false);
+        }
 
         mChart.setData(data);
         mChart.invalidate();

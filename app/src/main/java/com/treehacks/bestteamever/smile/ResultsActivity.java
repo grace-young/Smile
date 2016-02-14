@@ -1,38 +1,62 @@
 package com.treehacks.bestteamever.smile;
 
-import android.app.ListActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class ResultsActivity extends ListActivity {
+public class ResultsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+
+    public static final String TAG = ResultsActivity.class.getSimpleName();
+
+    private ListView listView;
 
     private ArrayList<String> items;
+    private ArrayList<String> adapterList;
     private ArrayAdapter<String> adapter;
+
+    private boolean datesShown = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_results);
 
+        listView = (ListView) findViewById(R.id.listView);
+
         items = new ArrayList<>();
         items.add("Monday");
         items.add("Tuesday");
         items.add("Wednesday");
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
-        setListAdapter(adapter);
+        adapterList = new ArrayList<>(items);
+
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, adapterList);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
     }
 
     @Override
-    protected void onListItemClick(ListView l, View v, int position, long id) {
-        super.onListItemClick(l, v, position, id);
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        toggleDateAndEmotions(position);
 
-        items.remove(position);
         adapter.notifyDataSetChanged();
+    }
+
+    private void toggleDateAndEmotions(int pos) {
+        if (datesShown) {
+            // show emotions
+            adapterList.set(pos, "hi");
+            datesShown = false;
+        } else {
+            // show dates
+            adapterList.set(pos, items.get(pos));
+            datesShown = true;
+        }
     }
 
     @Override
@@ -50,7 +74,7 @@ public class ResultsActivity extends ListActivity {
 
         if (items != null) {
             adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
-            setListAdapter(adapter);
+            listView.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }
 
