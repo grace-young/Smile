@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
-import android.media.session.MediaController;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -31,9 +30,6 @@ public class Soothe extends Activity
     int imagesToShow[] = { R.drawable.soothe0, R.drawable.soothe1,R.drawable.soothe2,
                             R.drawable.soothe3, R.drawable.soothe4, R.drawable.soothe5};
 
-
-    private MediaController mMediaController;
-    private MediaPlayer mMediaPlayer;
     private ImageButton btnPlay;
     private ImageButton btnForward;
     private ImageButton btnBackward;
@@ -255,8 +251,8 @@ public class Soothe extends Activity
             mp.prepare();
             mp.start();
             // Displaying Song title
-            String songTitle = "TestSong";
-            songTitleLabel.setText(songTitle);
+//            String songTitle = "TestSong";
+//            songTitleLabel.setText(songTitle);
 
             // Changing Button Image to pause image
             btnPlay.setImageResource(R.drawable.btn_pause);
@@ -312,6 +308,12 @@ public class Soothe extends Activity
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mHandler.removeCallbacks(mUpdateTimeTask);
     }
 
     /**
@@ -374,12 +376,6 @@ public class Soothe extends Activity
         super.onDestroy();
         mp.release();
     }
-
-
-
-
-
-
 
 
     private void animate(final ImageView imageView, final int images[], final int imageIndex, final boolean forever) {

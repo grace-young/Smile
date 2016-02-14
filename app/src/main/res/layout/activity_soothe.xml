@@ -16,8 +16,7 @@
         android:layout_height="0dp"
         android:layout_weight="0.5"
         android:background="@color/colorBackground"
-        android:layout_gravity="center_horizontal|bottom"
-        >
+        android:layout_gravity="center_horizontal|bottom" >
         <ImageView
             android:id="@+id/imageDisplay"
             android:scaleType="centerCrop"
@@ -53,12 +52,12 @@
                     android:textSize="100dp"
                     android:paddingLeft="20dp"
                     android:textStyle="bold"
-                    android:text="Enya"
                     android:layout_marginTop="10dp"/>
 
                 <!-- Playlist button -->
 
                 <ImageButton
+                    android:visibility="gone"
                     android:id="@+id/btnPlaylist"
                     android:layout_width="wrap_content"
                     android:layout_height="fill_parent"
@@ -162,10 +161,6 @@
             </LinearLayout>
 
         </LinearLayout>
-
-
-
-
 
     </RelativeLayout>
 
