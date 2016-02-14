@@ -78,13 +78,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-
     public void sootheClick(View view) {
-
-        Intent sootheIntent = new Intent(this, Soothe.class);
-        Log.d("clicked", "soothe clicked");
-        startActivity(sootheIntent);
+        try {
+            Intent audioIntent = new Intent(this, Soothe.class);
+            //String teleString = getString(R.string.telephoneParseStr);
+            //audioIntent.setData(Uri.parse(teleString));
+            startActivity(audioIntent);
+        } catch (ActivityNotFoundException e) {
+            Log.e("problem", "Call failed", e);
+        }
     }
+
 }
