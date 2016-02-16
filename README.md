@@ -1,6 +1,6 @@
 #Sm:)e
-CS + Mental Health Android app built during TreeHacks 2016.
-Team members: Kristen Law, Catherina Xu, Grace Young, Meera Srinivasan
+CS + Mental Health Android app built during TreeHacks 2016.  
+Team members: Kristen Law, Catherina Xu, Grace Young, Meera Srinivasan  
 http://devpost.com/software/sm-e
 
 ##Inspiration
